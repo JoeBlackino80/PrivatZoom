@@ -1,0 +1,26 @@
+name: zavoj
+description: ZÁVOJ — privacy video komunikácia. Buď prítomný, ostaň neidentifikovateľný.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # kamera a on-device ML (Fáza 1 integrácia)
+  camera: ^0.11.0
+  google_mlkit_face_detection: ^0.13.0
+  # hovory + backend (Fáza 2)
+  # livekit_client: ^2.0.0
+  # supabase_flutter: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

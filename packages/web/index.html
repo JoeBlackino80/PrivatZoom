@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZÁVOJ — privacy video proof</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">🛡</span>
+        <div>
+          <h1>ZÁVOJ</h1>
+          <p class="tag">buď prítomný, ostaň neidentifikovateľný</p>
+        </div>
+      </div>
+      <div id="privacy-indicator" class="privacy-indicator on-device">
+        <span class="dot"></span>
+        <span id="bytes-label">on-device · 0 bytov odoslaných</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="stage">
+        <div class="video-wrap">
+          <!-- skrytý surový vstup; zobrazujeme len zaclonený výstup -->
+          <video id="cam" playsinline muted hidden></video>
+          <canvas id="out"></canvas>
+          <div id="overlay" class="overlay">
+            <button id="start" class="primary">Spustiť kameru</button>
+            <p class="hint">Náhľad nižšie je <strong>jediný</strong> výstup. Surové
+              video sa nikdy nezobrazí ani neodošle.</p>
+          </div>
+          <div class="stats">
+            <span id="stat-fps">— fps</span>
+            <span id="stat-faces">0 tvárí</span>
+            <span id="stat-cover" class="cover-pill hidden">clona aktívna</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="controls">
+        <div class="group">
+          <h2>Režim clony</h2>
+          <div id="modes" class="seg">
+            <button data-mode="pixelate" class="active">Pixely</button>
+            <button data-mode="blur">Blur</button>
+            <button data-mode="mask">Maska</button>
+            <button data-mode="silhouette">Silueta</button>
+            <button data-mode="avatar">Avatar</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>Sila efektu</h2>
+          <input id="intensity" type="range" min="0" max="100" value="60" />
+        </div>
+
+        <div class="group">
+          <h2>Pozadie</h2>
+          <div id="scrub" class="seg">
+            <button data-scrub="off">Nechať</button>
+            <button data-scrub="blur" class="active">Rozmazať</button>
+            <button data-scrub="replace">Nahradiť</button>
+          </div>
+          <p class="note">prostredie (izba, kancelária) ťa tiež prezradí</p>
+        </div>
+
+        <div class="group toggles">
+          <label><input id="failsafe" type="checkbox" checked /> Fail-safe clona
+            <small>keď tvár vypadne, zaclonení sa celý obraz</small></label>
+          <label><input id="multiface" type="checkbox" checked /> Viac tvárí
+            <small>chrániť každú tvár v zábere</small></label>
+        </div>
+
+        <div class="group">
+          <h2>Persona</h2>
+          <input id="persona" type="text" value="zdroj-01" placeholder="seed persony" />
+          <p class="note">rovnaký seed → rovnaká silueta/avatar a hlas vždy</p>
+        </div>
+
+        <div class="group toggles">
+          <label><input id="voice" type="checkbox" /> Anonymizovať hlas
+            <small id="voice-info">pitch/formant z persony</small></label>
+        </div>
+
+        <p class="privacy-note">
+          Spracovanie beží <strong>v tvojom prehliadači</strong>. Žiadny video ani
+          audio frame neopúšťa zariadenie — indikátor hore drží 0&nbsp;bytov.
+        </p>
+      </aside>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

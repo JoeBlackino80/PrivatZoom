@@ -1,0 +1,20 @@
+{
+  "name": "zavoj",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ZÁVOJ — on-device privacy video & voice anonymization. Buď prítomný, ostaň neidentifikovateľný.",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/engine",
+    "packages/web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @zavoj/engine && npm run build -w @zavoj/web",
+    "dev": "npm run dev -w @zavoj/web",
+    "test": "npm run test -w @zavoj/engine",
+    "typecheck": "npm run typecheck -w @zavoj/engine && npm run typecheck -w @zavoj/web"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
