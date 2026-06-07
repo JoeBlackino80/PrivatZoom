@@ -4,6 +4,7 @@ import {
   boxBlur,
   silhouette,
   compositeByMask,
+  blurBoxes,
   fill,
 } from '../src/core/pixels.js';
 
@@ -103,6 +104,39 @@ describe('compositeByMask', () => {
     const bg = rgba([[0, 0, 0]]);
     const out = compositeByMask(fg, bg, [0.5], 1, 1);
     expect(out[0]).toBe(100);
+  });
+});
+
+describe('blurBoxes (scrub scény)', () => {
+  it('rozmaže len pixely vnútri boxu, zvyšok nechá', () => {
+    // 4x1 obraz: [0,240,0,240]; box pokrýva pravú polovicu (x=0.5,w=0.5)
+    const src = rgba([[0, 0, 0], [240, 0, 0], [0, 0, 0], [240, 0, 0]]);
+    const out = blurBoxes(src, 4, 1, [{ x: 0.5, y: 0, width: 0.5, height: 1 }], 1);
+    // ľavá polovica nezmenená
+    expect(out[0]).toBe(0);
+    expect(out[4]).toBe(240);
+    // pravá polovica rozmazaná (priemerovaná) → medzi 0 a 240
+    expect(out[8]).toBeGreaterThan(0);
+    expect(out[8]).toBeLessThan(240);
+  });
+
+  it('prázdny zoznam boxov nechá obraz nezmenený', () => {
+    const src = rgba([[10, 20, 30], [40, 50, 60]]);
+    const out = blurBoxes(src, 2, 1, [], 2);
+    expect(Array.from(out)).toEqual(Array.from(src));
+  });
+
+  it('box mimo plátna sa bezpečne oreže (žiadny pád)', () => {
+    const src = rgba([[10, 0, 0], [20, 0, 0]]);
+    const out = blurBoxes(src, 2, 1, [{ x: 0.9, y: 0, width: 0.5, height: 1 }], 1);
+    expect(out.length).toBe(src.length);
+  });
+
+  it('nemutuje vstupný buffer', () => {
+    const src = rgba([[0, 0, 0], [240, 0, 0]]);
+    const copy = src.slice();
+    blurBoxes(src, 2, 1, [{ x: 0, y: 0, width: 1, height: 1 }], 1);
+    expect(Array.from(src)).toEqual(Array.from(copy));
   });
 });
 

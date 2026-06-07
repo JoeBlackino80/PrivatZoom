@@ -7,13 +7,14 @@
   "workspaces": [
     "packages/engine",
     "packages/safety",
+    "packages/rooms",
     "packages/web"
   ],
   "scripts": {
-    "build": "npm run build -w @zavoj/engine && npm run build -w @zavoj/safety && npm run build -w @zavoj/web",
+    "build": "npm run build -w @zavoj/engine && npm run build -w @zavoj/safety && npm run build -w @zavoj/rooms && npm run build -w @zavoj/web",
     "dev": "npm run dev -w @zavoj/web",
-    "test": "npm run test -w @zavoj/engine && npm run test -w @zavoj/safety",
-    "typecheck": "npm run typecheck -w @zavoj/engine && npm run typecheck -w @zavoj/safety && npm run typecheck -w @zavoj/web"
+    "test": "npm run test -w @zavoj/engine && npm run test -w @zavoj/safety && npm run test -w @zavoj/rooms",
+    "typecheck": "npm run typecheck -w @zavoj/engine && npm run typecheck -w @zavoj/safety && npm run typecheck -w @zavoj/rooms && npm run typecheck -w @zavoj/web"
   },
   "engines": {
     "node": ">=20"

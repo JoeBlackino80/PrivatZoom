@@ -2,7 +2,7 @@
  * Runtime rozhrania — orchestrátor závisí na týchto abstrakciách, nie na
  * konkrétnej platforme. Flutter/SDK port vymení implementáciu, nie kontrakt.
  */
-import { FaceBox } from '../types.js';
+import { FaceBox, SensitiveRegion } from '../types.js';
 
 /** Zdroj video frameov (HTMLVideoElement v prehliadači). */
 export type FrameSource = CanvasImageSource & {
@@ -31,4 +31,13 @@ export interface ISegmenter {
 /** Vykreslenie zaclonených (alebo odhalených) frameov do výstupu. */
 export interface IRenderer {
   render(input: import('./renderer.js').RenderInput): void;
+}
+
+/**
+ * Detektor citlivých regiónov scény (text/menovky, obrazovky, kódy, ŠPZ).
+ * On-device; vracia normalizované boxy (0..1). Implementácia je platform-specific
+ * (web: Shape Detection API; mobil: ML Kit text/objekt), kontrakt je spoločný.
+ */
+export interface ISceneDetector {
+  detectSensitive(frame: FrameSource, timestampMs: number): SensitiveRegion[] | Promise<SensitiveRegion[]>;
 }

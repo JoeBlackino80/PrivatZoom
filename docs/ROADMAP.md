@@ -56,14 +56,14 @@ Appka robí marketing aj dôkaz pre B2B predaj. Bez nej sa SDK predáva ťažko.
 - `v1` `[x]` **Zachovanie mimiky** — reálne reakcie a pohyb pier, identita nie
 - `v1` `[x]` **Fail-safe clona** — keď tvár vypadne, zaclonení sa celý obraz
 - `v1` `[x]` **Scrub pozadia** — blur alebo výmena prostredia
-- `v2` `[ ]` **Scrub scény** — auto-blur menoviek, dokumentov, obrazoviek, ŠPZ
+- `v2` `[x]` **Scrub scény** — auto-blur menoviek, dokumentov, obrazoviek, kódov/ŠPZ (engine `sceneScrub` + `ISceneDetector`; web cez Shape Detection API, mobil ML Kit; pure `blurBoxes` testovaný)
 - `v1` `[x]` Viacero tvárí naraz (skupinová ochrana)
 
 ### Identita & persona
 - `v1` `[~]` **Stabilná anonymná persona** — rovnaký avatar + hlas pri každom hovore (deterministický seed → profil; UI v appke)
 - `v1` `[x]` **Reveal na tvoj príkaz** — začneš anonymne, tvár odhalíš keď ty chceš (hold-to-reveal; engine `setRevealed`, bypass detekcie, viditeľný LIVE badge)
-- `v2` `[ ]` **Viac person** — iná clona na rôzne kontexty
-- `v2` `[ ]` **Per-kontakt nastavenie** — vždy anonymný voči X, reálny voči Y
+- `v2` `[x]` **Viac person** — iná clona na rôzne kontexty (engine `PersonaBook`; web preset switcher; 11 testov)
+- `v2` `[x]` **Per-kontakt nastavenie** — vždy anonymný voči X, reálny voči Y (`assign` / `REAL_PERSONA_ID`; UI v appke Fáza 2)
 
 ### Hlas & audio
 - `v1` `[x]` **Anonymizácia hlasu** — pitch / formant
@@ -85,10 +85,10 @@ Appka robí marketing aj dôkaz pre B2B predaj. Bez nej sa SDK predáva ťažko.
 - *(Nutné pre schválenie v store aj pre B2B klientov ako telemedicína.)*
 - Napojené v web showcase (veková brána pri vstupe, consent indikátor, report/block).
 
-### Komunikácia (appka)
-- `v1` `[ ]` **Link-based anonymné miestnosti** — bez účtu sa dá pripojiť
-- `v1` `[ ]` 1:1 hovory
-- `v2` `[ ]` Jednorazové / časované linky
+### Komunikácia (appka) → `packages/rooms` (Fáza 2 skeleton, 22 testov)
+- `v1` `[~]` **Link-based anonymné miestnosti** — bez účtu sa dá pripojiť (logika linkov + token hotová; transport LiveKit za `ICallTransport`)
+- `v1` `[~]` 1:1 hovory — `RoomSession` stavový automat hotový; transport v appke
+- `v2` `[x]` Jednorazové / časované linky — `createTimedLink` + `isLinkValid` (one-time/expiry), testované
 - `v2` `[ ]` Anonymný textový chat v hovore
 - `later` `[ ]` **Skupinové hovory**
 - `later` `[ ]` **Screen share s auto-blurom** citlivého obsahu

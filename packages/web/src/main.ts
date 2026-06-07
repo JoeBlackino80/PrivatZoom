@@ -7,6 +7,7 @@
 import {
   VideoAnonymizer,
   VoiceAnonymizer,
+  BrowserSceneDetector,
   type AnonMode,
   type BackgroundScrub,
   core,
@@ -52,6 +53,7 @@ const state = {
   voice: false,
   noise: true,
   voiceOnly: false,
+  sceneScrub: false,
 };
 
 function applyConfig(): void {
@@ -61,6 +63,7 @@ function applyConfig(): void {
     scrubBackground: state.scrubBackground,
     failSafe: state.failSafe,
     multiFace: state.multiFace,
+    sceneScrub: state.sceneScrub,
   });
 }
 
@@ -97,6 +100,31 @@ $<HTMLInputElement>('failsafe').addEventListener('change', (e) => {
 $<HTMLInputElement>('multiface').addEventListener('change', (e) => {
   state.multiFace = (e.target as HTMLInputElement).checked;
   applyConfig();
+});
+$<HTMLInputElement>('scenescrub').addEventListener('change', (e) => {
+  state.sceneScrub = (e.target as HTMLInputElement).checked;
+  applyConfig();
+});
+// presety person — viac person pre rôzne kontexty (Bod 2)
+$<HTMLSelectElement>('persona-preset').addEventListener('change', (e) => {
+  const seed = (e.target as HTMLSelectElement).value;
+  const modeByPreset: Record<string, AnonMode> = {
+    'zdroj-01': 'silhouette',
+    'anon-01': 'pixelate',
+    'praca-01': 'avatar',
+    'zoznamka-01': 'mask',
+  };
+  state.persona = seed;
+  $<HTMLInputElement>('persona').value = seed;
+  // prepni aj režim podľa presetu a zvýrazni v UI
+  const mode = modeByPreset[seed] ?? state.mode;
+  state.mode = mode;
+  document.querySelectorAll<HTMLButtonElement>('#modes button').forEach((b) => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  applyConfig();
+  updateVoiceInfo();
+  applyVoiceProfile();
 });
 $<HTMLInputElement>('persona').addEventListener('change', (e) => {
   state.persona = (e.target as HTMLInputElement).value || 'zavoj-default';
@@ -171,13 +199,21 @@ async function start(): Promise<void> {
       failSafe: state.failSafe,
       multiFace: state.multiFace,
     });
+    const sceneDetector = new BrowserSceneDetector();
     await engine.init({
       canvas,
       wasmBasePath: MODELS.wasmBasePath,
       faceModelUrl: MODELS.faceModelUrl,
       segModelUrl: MODELS.segModelUrl,
       personaSeed: state.persona,
+      sceneDetector,
     });
+    if (!sceneDetector.available) {
+      // Shape Detection API nie je v tomto prehliadači — toggle ostane, ale
+      // bez detektora nič nerozmaže; informuj používateľa.
+      const label = $<HTMLInputElement>('scenescrub').parentElement?.querySelector('small');
+      if (label) label.textContent = 'tento prehliadač nepodporuje detekciu scény';
+    }
 
     setupVoice(stream);
 

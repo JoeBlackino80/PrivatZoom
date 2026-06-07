@@ -6,3 +6,4 @@ export * from './config.js';
 export * from './pixels.js';
 export * from './failsafe.js';
 export * from './audio.js';
+export * from './personas.js';

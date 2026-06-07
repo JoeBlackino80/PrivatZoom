@@ -93,12 +93,21 @@
             <small>keď tvár vypadne, zaclonení sa celý obraz</small></label>
           <label><input id="multiface" type="checkbox" checked /> Viac tvárí
             <small>chrániť každú tvár v zábere</small></label>
+          <label><input id="scenescrub" type="checkbox" /> Scrub scény
+            <small>auto-blur menoviek, dokumentov, obrazoviek, kódov</small></label>
         </div>
 
         <div class="group">
           <h2>Persona</h2>
+          <select id="persona-preset">
+            <option value="zdroj-01">Zdroj (silueta)</option>
+            <option value="anon-01">Anonym (pixely)</option>
+            <option value="praca-01">Práca (avatar)</option>
+            <option value="zoznamka-01">Zoznamka (maska)</option>
+          </select>
           <input id="persona" type="text" value="zdroj-01" placeholder="seed persony" />
-          <p class="note">rovnaký seed → rovnaká silueta/avatar a hlas vždy</p>
+          <p class="note">rovnaký seed → rovnaká silueta/avatar a hlas vždy ·
+            per-kontakt priradenie rieši appka (Fáza 2)</p>
         </div>
 
         <div class="group toggles">

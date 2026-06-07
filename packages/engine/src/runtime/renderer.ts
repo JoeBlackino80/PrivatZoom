@@ -3,12 +3,13 @@
  * (core/pixels). Beží všade bez GPU závislostí a je verifikovateľná na
  * zariadení. WebGL/Metal fast-path (shaders.ts) počíta to isté.
  */
-import { AnonConfig, FaceBox, RGB } from '../types.js';
+import { AnonConfig, FaceBox, RGB, SensitiveRegion } from '../types.js';
 import {
   pixelate,
   boxBlur,
   silhouette,
   compositeByMask,
+  blurBoxes,
   fill,
 } from '../core/pixels.js';
 import { intensityToBlockSize, intensityToBlurRadius } from '../core/config.js';
@@ -52,6 +53,8 @@ export interface RenderInput {
   personaSeed: number;
   /** Reveal-on-command: keď true, prejde surový frame (používateľ odhalil tvár). */
   revealed: boolean;
+  /** Citlivé regióny scény na auto-blur (menovky, dokumenty, obrazovky, ŠPZ). */
+  sensitiveBoxes: SensitiveRegion[];
 }
 
 export class CanvasRenderer {
@@ -109,6 +112,11 @@ export class CanvasRenderer {
 
     // 3) efekt na tvár(e)
     data = this.applyFaceEffect(data, w, h, faces, mask, config, personaSeed);
+
+    // 4) scrub scény — rozmaž citlivé regióny (menovky, dokumenty, obrazovky, ŠPZ)
+    if (config.sceneScrub && input.sensitiveBoxes.length > 0) {
+      data = blurBoxes(data, w, h, input.sensitiveBoxes, Math.max(12, intensityToBlurRadius(1)));
+    }
 
     // zapíš výsledok späť do pôvodného ImageData a vyrenderuj
     img.data.set(data);

@@ -4,14 +4,20 @@
  *
  * Privacy invariant: bytesSent ostáva 0 počas celého života objektu.
  */
-import { AnonConfig, EngineStats, FaceBox } from './types.js';
+import { AnonConfig, EngineStats, FaceBox, SensitiveRegion } from './types.js';
 import { normalizeConfig } from './core/config.js';
 import { FailSafe, FailSafeOptions } from './core/failsafe.js';
 import { hashSeed } from './core/audio.js';
 import { CanvasRenderer } from './runtime/renderer.js';
 import { MediaPipeFaceDetector } from './runtime/faceDetector.js';
 import { MediaPipeSegmenter } from './runtime/segmenter.js';
-import { FrameSource, IFaceDetector, IRenderer, ISegmenter } from './runtime/interfaces.js';
+import {
+  FrameSource,
+  IFaceDetector,
+  IRenderer,
+  ISceneDetector,
+  ISegmenter,
+} from './runtime/interfaces.js';
 
 export interface InitOptions {
   /** Výstupný canvas pre zaclonený náhľad. Nepovinné, ak je daný `renderer`. */
@@ -29,6 +35,7 @@ export interface InitOptions {
   /** Injektovateľné implementácie (test / Flutter / SDK port). */
   detector?: IFaceDetector;
   segmenter?: ISegmenter | null;
+  sceneDetector?: ISceneDetector | null;
   renderer?: IRenderer;
 }
 
@@ -37,9 +44,16 @@ export class VideoAnonymizer {
   private renderer: IRenderer | null = null;
   private detector: IFaceDetector | null = null;
   private segmenter: ISegmenter | null = null;
+  private sceneDetector: ISceneDetector | null = null;
   private failSafe: FailSafe;
   private personaSeed = 0;
   private revealed = false;
+
+  // scrub scény — detekcia je drahá, beží throttlovane a výsledky sa cachujú
+  private sensitiveBoxes: SensitiveRegion[] = [];
+  private lastSceneDetect = 0;
+  private scenePending = false;
+  private static readonly SCENE_INTERVAL_MS = 300;
 
   // telemetria
   private readonly bytesSent = 0; // invariant
@@ -83,6 +97,8 @@ export class VideoAnonymizer {
         modelAssetPath: opts.segModelUrl,
       });
     }
+
+    if (opts.sceneDetector !== undefined) this.sceneDetector = opts.sceneDetector;
   }
 
   setConfig(config: Partial<AnonConfig>): void {
@@ -121,9 +137,17 @@ export class VideoAnonymizer {
         covered: false,
         personaSeed: this.personaSeed,
         revealed: true,
+        sensitiveBoxes: [],
       });
       this.updateFps(timestampMs);
       return;
+    }
+
+    // scrub scény — throttlovaná (a prípadne async) detekcia citlivých regiónov
+    if (this.config.sceneScrub && this.sceneDetector) {
+      this.maybeDetectScene(frame, timestampMs);
+    } else if (this.sensitiveBoxes.length > 0) {
+      this.sensitiveBoxes = [];
     }
 
     const faces: FaceBox[] = this.detector.detect(frame, timestampMs);
@@ -149,9 +173,38 @@ export class VideoAnonymizer {
       covered,
       personaSeed: this.personaSeed,
       revealed: false,
+      sensitiveBoxes: this.sensitiveBoxes,
     });
 
     this.updateFps(timestampMs);
+  }
+
+  /**
+   * Spustí detekciu citlivých regiónov maximálne raz za SCENE_INTERVAL_MS a
+   * cachuje výsledok. Detektor môže byť sync alebo async — async beh nezablokuje
+   * render slučku (medzitým sa použijú posledné známe boxy).
+   */
+  private maybeDetectScene(frame: FrameSource, timestampMs: number): void {
+    if (this.scenePending) return;
+    if (timestampMs - this.lastSceneDetect < VideoAnonymizer.SCENE_INTERVAL_MS) return;
+    this.lastSceneDetect = timestampMs;
+
+    const result = this.sceneDetector!.detectSensitive(frame, timestampMs);
+    if (result instanceof Promise) {
+      this.scenePending = true;
+      result
+        .then((boxes) => {
+          this.sensitiveBoxes = boxes;
+        })
+        .catch(() => {
+          /* detekcia môže zlyhať na frame — ponecháme posledné boxy */
+        })
+        .finally(() => {
+          this.scenePending = false;
+        });
+    } else {
+      this.sensitiveBoxes = result;
+    }
   }
 
   getStats(): EngineStats {

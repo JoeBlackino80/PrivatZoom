@@ -43,6 +43,7 @@ zariadenie. **Súkromie nie je sľub na papieri, je to architektúra.**
 |--------------------|------|----------|
 | `packages/engine`  | 1    | Prenosné anonymizačné jadro (TypeScript). Pure pixel/audio core + WebGL efekty + on-device ML wrapper. **Toto je majetok.** |
 | `packages/safety`  | 1    | Anti-abuse vrstva (vekové brány, súhlas s nahrávaním, report/block). Prenosná, testovaná. **Podmienka** pre store aj B2B. |
+| `packages/rooms`   | 2    | Fáza 2 skeleton: link-miestnosti, plan gating (free/pro), session state, kontrakty pre LiveKit/Supabase/Stripe. |
 | `packages/web`     | 0    | Spustiteľná web showcase nad engine — proof, marketing aj manuálny test (kamera → efekty → 0 bytov odoslaných). |
 | `app/`             | 1–2  | Flutter B2C appka (skeleton + plán). Build na zariadení = lokálne cez Mac. |
 | `sdk/`             | 3    | Štruktúra a kontrakt SDK pre B2B licencovanie. |
@@ -84,10 +85,12 @@ npm run build     # build engine + web
 - [x] Reveal-on-command (hold-to-reveal, bypass detekcie) — **unit-tested**
 - [x] Potlačenie šumu + voice-only režim (kamera vyp., len hlas)
 - [x] Anti-abuse vrstva: vekové brány, súhlas s nahrávaním, report/block — **unit-tested**
+- [x] Scrub scény (auto-blur menoviek/dokumentov/obrazoviek) + viac person + per-kontakt — **unit-tested**
 - [x] On-device indikátor „0 bytov odoslaných”
 - [x] Web showcase (proof + manuálny test)
+- [~] Fáza 2 skeleton (`packages/rooms`): link-miestnosti, plan gating, session — **unit-tested**; transport (LiveKit) za rozhraním
 - [ ] Flutter port jadra (Fáza 1) — skeleton pripravený v `app/`
-- [ ] LiveKit hovory, persony, billing (Fáza 2)
+- [ ] LiveKit/Supabase/Stripe napojenie (Fáza 2 implementácia)
 - [ ] SDK bindings + compliance (Fáza 3)
 
 Detailná roadmapa: [docs/ROADMAP.md](docs/ROADMAP.md).

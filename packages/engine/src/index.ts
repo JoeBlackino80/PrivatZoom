@@ -14,9 +14,11 @@ export { CanvasRenderer } from './runtime/renderer.js';
 export type { RenderInput } from './runtime/renderer.js';
 export { MediaPipeFaceDetector } from './runtime/faceDetector.js';
 export { MediaPipeSegmenter } from './runtime/segmenter.js';
+export { BrowserSceneDetector } from './runtime/sceneDetector.js';
 export type {
   IFaceDetector,
   ISegmenter,
+  ISceneDetector,
   IRenderer,
   FrameSource,
 } from './runtime/interfaces.js';

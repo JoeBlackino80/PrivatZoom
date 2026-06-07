@@ -6,7 +6,7 @@
  * Produkčná rýchla cesta sú GPU shadery v runtime/, ktoré počítajú to isté.
  */
 
-import { RGB } from '../types.js';
+import { RGB, Rect } from '../types.js';
 export type { RGB };
 
 /** Index do RGBA bufferu pre pixel (x, y). */
@@ -201,6 +201,68 @@ export function compositeByMask(
     }
   }
   return out;
+}
+
+/**
+ * Rozmaže zadané normalizované obdĺžniky (0..1) — scrub scény: menovky,
+ * dokumenty, obrazovky, ŠPZ, fotky v zábere. Boxy mimo plátna sa orežú,
+ * prázdne/nulové sa preskočia. Vracia nový buffer.
+ */
+export function blurBoxes(
+  src: Uint8ClampedArray,
+  width: number,
+  height: number,
+  boxes: Rect[],
+  radius: number,
+): Uint8ClampedArray {
+  const out = src.slice();
+  for (const box of boxes) {
+    const fx = clampInt(box.x * width, 0, width);
+    const fy = clampInt(box.y * height, 0, height);
+    const fw = clampInt(box.width * width, 0, width - fx);
+    const fh = clampInt(box.height * height, 0, height - fy);
+    if (fw < 1 || fh < 1) continue;
+
+    const region = extractRegion(out, width, fx, fy, fw, fh);
+    const blurred = boxBlur(region, fw, fh, radius);
+    insertRegion(out, width, blurred, fx, fy, fw, fh);
+  }
+  return out;
+}
+
+function clampInt(v: number, min: number, max: number): number {
+  return Math.round(Math.min(max, Math.max(min, v)));
+}
+
+function extractRegion(
+  data: Uint8ClampedArray,
+  width: number,
+  fx: number,
+  fy: number,
+  fw: number,
+  fh: number,
+): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(fw * fh * 4);
+  for (let y = 0; y < fh; y++) {
+    const srcStart = ((fy + y) * width + fx) * 4;
+    out.set(data.subarray(srcStart, srcStart + fw * 4), y * fw * 4);
+  }
+  return out;
+}
+
+function insertRegion(
+  data: Uint8ClampedArray,
+  width: number,
+  region: Uint8ClampedArray,
+  fx: number,
+  fy: number,
+  fw: number,
+  fh: number,
+): void {
+  for (let y = 0; y < fh; y++) {
+    const dstStart = ((fy + y) * width + fx) * 4;
+    data.set(region.subarray(y * fw * 4, (y + 1) * fw * 4), dstStart);
+  }
 }
 
 /** Vyplní celý buffer jednou farbou (fail-safe celoplošná clona). */

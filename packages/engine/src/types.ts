@@ -12,6 +12,24 @@ export interface RGB {
   b: number;
 }
 
+/** Obdĺžnik v normalizovaných súradniciach (0..1). */
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Typ citlivého regiónu, ktorý scrub scény rozmaže. */
+export type SensitiveKind = 'text' | 'screen' | 'code' | 'plate' | 'photo' | 'other';
+
+/** Citlivý región v zábere (menovka, dokument, obrazovka, ŠPZ, foto). */
+export interface SensitiveRegion extends Rect {
+  kind: SensitiveKind;
+  /** Skóre dôvery 0..1. */
+  score: number;
+}
+
 /** Anonymizačné režimy obrazu (v1). */
 export type AnonMode =
   | 'blur'
@@ -35,6 +53,8 @@ export interface AnonConfig {
   failSafe: boolean;
   /** Chrániť všetky tváre v zábere, nielen najväčšiu. */
   multiFace: boolean;
+  /** Auto-blur citlivých regiónov scény (menovky, dokumenty, obrazovky, ŠPZ). */
+  sceneScrub: boolean;
 }
 
 /** Obdĺžnik tváre v normalizovaných súradniciach (0..1). */
@@ -76,4 +96,5 @@ export const DEFAULT_CONFIG: AnonConfig = {
   scrubBackground: 'blur',
   failSafe: true,
   multiFace: true,
+  sceneScrub: false,
 };

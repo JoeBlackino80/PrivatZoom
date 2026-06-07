@@ -28,6 +28,7 @@ export function normalizeConfig(input: Partial<AnonConfig> | undefined): AnonCon
       : DEFAULT_CONFIG.scrubBackground,
     failSafe: Boolean(cfg.failSafe),
     multiFace: Boolean(cfg.multiFace),
+    sceneScrub: Boolean(cfg.sceneScrub),
   };
 }
 

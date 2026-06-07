@@ -43,6 +43,7 @@ describe('normalizeConfig', () => {
       scrubBackground: 'replace',
       failSafe: false,
       multiFace: false,
+      sceneScrub: true,
     });
     expect(cfg).toEqual({
       mode: 'silhouette',
@@ -50,6 +51,7 @@ describe('normalizeConfig', () => {
       scrubBackground: 'replace',
       failSafe: false,
       multiFace: false,
+      sceneScrub: true,
     });
   });
 });
