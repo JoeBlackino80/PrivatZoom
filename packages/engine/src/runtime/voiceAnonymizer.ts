@@ -17,12 +17,24 @@ export class VoiceAnonymizer {
 
   private input: GainNode;
   private output: GainNode;
+  private highpass: BiquadFilterNode;
+  private lowpass: BiquadFilterNode;
   private formantLow: BiquadFilterNode;
   private formantPeak: BiquadFilterNode;
+  private noiseSuppression = true;
 
   constructor(ctx: AudioContext) {
     this.input = ctx.createGain();
     this.output = ctx.createGain();
+
+    // potlačenie šumu: orež nízky rumble (AC, dych do mikrofónu) a vysoký sykot
+    // → kvalita + pozadie neprezradí, kde si.
+    this.highpass = ctx.createBiquadFilter();
+    this.highpass.type = 'highpass';
+    this.highpass.frequency.value = 85;
+    this.lowpass = ctx.createBiquadFilter();
+    this.lowpass.type = 'lowpass';
+    this.lowpass.frequency.value = 12000;
 
     // formantové tvarovanie — posúva vnímaný tvar hlasového traktu
     this.formantLow = ctx.createBiquadFilter();
@@ -31,9 +43,25 @@ export class VoiceAnonymizer {
     this.formantPeak.type = 'peaking';
     this.formantPeak.Q.value = 0.9;
 
-    this.input.connect(this.formantLow);
+    this.input.connect(this.highpass);
+    this.highpass.connect(this.lowpass);
+    this.lowpass.connect(this.formantLow);
     this.formantLow.connect(this.formantPeak);
     this.formantPeak.connect(this.output);
+  }
+
+  /**
+   * Zapne/vypne potlačenie šumu. Pri vypnutí sa filtre nastavia na krajné
+   * frekvencie (efektívne priepustné), graf ostáva rovnaký.
+   */
+  setNoiseSuppression(enabled: boolean): void {
+    this.noiseSuppression = enabled;
+    this.highpass.frequency.value = enabled ? 85 : 10;
+    this.lowpass.frequency.value = enabled ? 12000 : 20000;
+  }
+
+  get noiseSuppressionEnabled(): boolean {
+    return this.noiseSuppression;
   }
 
   /** Aplikuje deterministický profil persony. */

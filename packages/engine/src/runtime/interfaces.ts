@@ -27,3 +27,8 @@ export interface ISegmenter {
     height: number,
   ): { mask: ArrayLike<number>; width: number; height: number } | null;
 }
+
+/** Vykreslenie zaclonených (alebo odhalených) frameov do výstupu. */
+export interface IRenderer {
+  render(input: import('./renderer.js').RenderInput): void;
+}

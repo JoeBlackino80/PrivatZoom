@@ -17,6 +17,7 @@ export { MediaPipeSegmenter } from './runtime/segmenter.js';
 export type {
   IFaceDetector,
   ISegmenter,
+  IRenderer,
   FrameSource,
 } from './runtime/interfaces.js';
 

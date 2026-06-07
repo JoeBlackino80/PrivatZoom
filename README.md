@@ -80,6 +80,8 @@ npm run build     # build engine + web
 - [x] On-device detekcia tváre + segmentácia pozadia (MediaPipe Tasks Vision)
 - [x] Fail-safe clona (state machine s hysteréziou) — **unit-tested**
 - [x] Anonymizácia hlasu (Web Audio pitch/formant) + konzistentný profil — **unit-tested**
+- [x] Reveal-on-command (hold-to-reveal, bypass detekcie) — **unit-tested**
+- [x] Potlačenie šumu + voice-only režim (kamera vyp., len hlas)
 - [x] On-device indikátor „0 bytov odoslaných”
 - [x] Web showcase (proof + manuálny test)
 - [ ] Flutter port jadra (Fáza 1) — skeleton pripravený v `app/`

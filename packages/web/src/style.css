@@ -111,6 +111,47 @@ button.primary:disabled { opacity: 0.6; cursor: default; }
 .cover-pill { color: var(--warn); border-color: var(--warn) !important; }
 .hidden { display: none !important; }
 
+.stage-actions {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 14px; flex-wrap: wrap;
+}
+button.reveal {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  user-select: none; touch-action: none;
+}
+button.reveal:disabled { opacity: 0.4; cursor: default; }
+button.reveal.active {
+  background: #ff5a5a; color: #1a0606; border-color: #ff5a5a;
+}
+.reveal-hint { color: var(--muted); font-size: 12px; }
+
+.voice-only {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 18px; text-align: center;
+  background: radial-gradient(400px 240px at 50% 40%, #1a2440, #0c0d12 70%);
+}
+.voice-only p { margin: 0; color: var(--text); font-size: 15px; }
+.voice-only small { color: var(--muted); }
+.vu { display: flex; align-items: flex-end; gap: 6px; height: 56px; }
+.vu span {
+  width: 8px; background: var(--accent); border-radius: 4px;
+  animation: vu 1s ease-in-out infinite;
+}
+.vu span:nth-child(1) { height: 30%; animation-delay: 0s; }
+.vu span:nth-child(2) { height: 70%; animation-delay: 0.15s; }
+.vu span:nth-child(3) { height: 100%; animation-delay: 0.3s; }
+.vu span:nth-child(4) { height: 60%; animation-delay: 0.45s; }
+.vu span:nth-child(5) { height: 40%; animation-delay: 0.6s; }
+@keyframes vu { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+
 .controls {
   background: var(--panel);
   border: 1px solid var(--line);

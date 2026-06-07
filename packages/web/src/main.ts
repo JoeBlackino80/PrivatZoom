@@ -28,6 +28,8 @@ const statFps = $<HTMLSpanElement>('stat-fps');
 const statFaces = $<HTMLSpanElement>('stat-faces');
 const statCover = $<HTMLSpanElement>('stat-cover');
 const bytesLabel = $<HTMLSpanElement>('bytes-label');
+const revealBtn = $<HTMLButtonElement>('reveal');
+const voiceOnlyPanel = $<HTMLDivElement>('voice-only-panel');
 
 let engine: VideoAnonymizer | null = null;
 let voice: VoiceAnonymizer | null = null;
@@ -43,6 +45,8 @@ const state = {
   multiFace: true,
   persona: 'zdroj-01',
   voice: false,
+  noise: true,
+  voiceOnly: false,
 };
 
 function applyConfig(): void {
@@ -99,6 +103,29 @@ $<HTMLInputElement>('voice').addEventListener('change', (e) => {
   state.voice = (e.target as HTMLInputElement).checked;
   applyVoiceProfile();
 });
+$<HTMLInputElement>('noise').addEventListener('change', (e) => {
+  state.noise = (e.target as HTMLInputElement).checked;
+  voice?.setNoiseSuppression(state.noise);
+});
+$<HTMLInputElement>('voiceonly').addEventListener('change', (e) => {
+  state.voiceOnly = (e.target as HTMLInputElement).checked;
+  voiceOnlyPanel.classList.toggle('hidden', !state.voiceOnly);
+  // kamera vyp. — zastavíme video track, hlas beží ďalej
+  const track = (video.srcObject as MediaStream | null)?.getVideoTracks()[0];
+  if (track) track.enabled = !state.voiceOnly;
+  revealBtn.disabled = state.voiceOnly;
+});
+
+// reveal-on-command: hold-to-reveal (pustenie → späť anonymne)
+function setReveal(on: boolean): void {
+  if (state.voiceOnly) return;
+  engine?.setRevealed(on);
+  revealBtn.classList.toggle('active', on);
+}
+revealBtn.addEventListener('pointerdown', () => setReveal(true));
+revealBtn.addEventListener('pointerup', () => setReveal(false));
+revealBtn.addEventListener('pointerleave', () => setReveal(false));
+revealBtn.addEventListener('pointercancel', () => setReveal(false));
 
 function updateVoiceInfo(): void {
   const p = core.personaProfile(state.persona);
@@ -150,6 +177,7 @@ async function start(): Promise<void> {
     setupVoice(stream);
 
     overlay.classList.add('hidden');
+    revealBtn.disabled = false;
     running = true;
     requestAnimationFrame(loop);
   } catch (err) {
@@ -166,6 +194,7 @@ function setupVoice(stream: MediaStream): void {
   audioCtx = new AudioContext();
   voice = new VoiceAnonymizer(audioCtx);
   applyVoiceProfile();
+  voice.setNoiseSuppression(state.noise);
   const src = audioCtx.createMediaStreamSource(stream);
   const out = voice.connectSource(src);
   // monitorovací výstup len keď je hlas zapnutý (inak ticho — toto je proof)
@@ -177,12 +206,16 @@ function setupVoice(stream: MediaStream): void {
 
 function loop(ts: number): void {
   if (!running || !engine) return;
-  engine.processFrame(video, ts);
+
+  // voice-only: kamera vyp., spracovanie videa preskočíme (panel prekrýva canvas)
+  if (!state.voiceOnly) {
+    engine.processFrame(video, ts);
+  }
   const stats = engine.getStats();
 
-  statFps.textContent = `${stats.fps} fps`;
+  statFps.textContent = state.voiceOnly ? 'voice-only' : `${stats.fps} fps`;
   statFaces.textContent = `${stats.faces} ${stats.faces === 1 ? 'tvár' : 'tvárí'}`;
-  statCover.classList.toggle('hidden', !stats.covered);
+  statCover.classList.toggle('hidden', state.voiceOnly || !stats.covered);
   // privacy invariant — vždy 0
   bytesLabel.textContent = `on-device · ${stats.bytesSent} bytov odoslaných`;
 

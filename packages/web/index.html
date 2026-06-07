@@ -37,6 +37,14 @@
             <span id="stat-faces">0 tvárí</span>
             <span id="stat-cover" class="cover-pill hidden">clona aktívna</span>
           </div>
+          <div id="voice-only-panel" class="voice-only hidden">
+            <div class="vu"><span></span><span></span><span></span><span></span><span></span></div>
+            <p>Voice-only · kamera vypnutá<br /><small>počuť len zaclonený hlas</small></p>
+          </div>
+        </div>
+        <div class="stage-actions">
+          <button id="reveal" class="reveal" disabled>👁 Podrž pre odhalenie tváre</button>
+          <span class="reveal-hint">začni anonymne — tvár odhalíš len kým držíš</span>
         </div>
       </section>
 
@@ -83,6 +91,10 @@
         <div class="group toggles">
           <label><input id="voice" type="checkbox" /> Anonymizovať hlas
             <small id="voice-info">pitch/formant z persony</small></label>
+          <label><input id="noise" type="checkbox" checked /> Potlačenie šumu
+            <small>kvalita + pozadie neprezradí, kde si</small></label>
+          <label><input id="voiceonly" type="checkbox" /> Voice-only režim
+            <small>kamera vyp., len zaclonený hlas</small></label>
         </div>
 
         <p class="privacy-note">

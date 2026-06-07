@@ -61,15 +61,15 @@ Appka robí marketing aj dôkaz pre B2B predaj. Bez nej sa SDK predáva ťažko.
 
 ### Identita & persona
 - `v1` `[~]` **Stabilná anonymná persona** — rovnaký avatar + hlas pri každom hovore (deterministický seed → profil; UI v appke)
-- `v1` `[ ]` **Reveal na tvoj príkaz** — začneš anonymne, tvár odhalíš keď ty chceš
+- `v1` `[x]` **Reveal na tvoj príkaz** — začneš anonymne, tvár odhalíš keď ty chceš (hold-to-reveal; engine `setRevealed`, bypass detekcie, viditeľný LIVE badge)
 - `v2` `[ ]` **Viac person** — iná clona na rôzne kontexty
 - `v2` `[ ]` **Per-kontakt nastavenie** — vždy anonymný voči X, reálny voči Y
 
 ### Hlas & audio
 - `v1` `[x]` **Anonymizácia hlasu** — pitch / formant
 - `v1` `[x]` **Konzistentný syntetický profil** namiesto robotického skreslenia
-- `v1` `[~]` **Potlačenie šumu** — kvalita + pozadie neprezradí, kde si (hook pripravený)
-- `v2` `[ ]` **Voice-only režim** — kamera vyp., len zaclonený hlas
+- `v1` `[x]` **Potlačenie šumu** — kvalita + pozadie neprezradí, kde si (highpass/lowpass + getUserMedia noiseSuppression; toggle `setNoiseSuppression`)
+- `v2` `[x]` **Voice-only režim** — kamera vyp., len zaclonený hlas (web toggle: vypne video track, audio beží ďalej)
 
 ### Dôvera & bezpečnosť
 - `v1` `[ ]` **End-to-end šifrovanie** hovorov (LiveKit, Fáza 2)

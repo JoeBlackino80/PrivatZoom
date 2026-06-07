@@ -50,6 +50,8 @@ export interface RenderInput {
   covered: boolean;
   /** Seed persony (stabilná farba pre siluetu/avatar). */
   personaSeed: number;
+  /** Reveal-on-command: keď true, prejde surový frame (používateľ odhalil tvár). */
+  revealed: boolean;
 }
 
 export class CanvasRenderer {
@@ -72,7 +74,7 @@ export class CanvasRenderer {
   }
 
   render(input: RenderInput): void {
-    const { frame, faces, mask, config, covered, personaSeed } = input;
+    const { frame, faces, mask, config, covered, personaSeed, revealed } = input;
     const { w, h } = this.frameSize(frame);
     if (w === 0 || h === 0) return;
 
@@ -80,6 +82,14 @@ export class CanvasRenderer {
     this.out.height = h;
     this.work.width = w;
     this.work.height = h;
+
+    // Reveal-on-command: výslovné rozhodnutie používateľa ukázať tvár.
+    // Obíde anonymizáciu (ale len kým reveal trvá) a viditeľne to označí.
+    if (revealed) {
+      this.ctx.drawImage(frame, 0, 0, w, h);
+      this.drawRevealBadge(w, h);
+      return;
+    }
 
     // Fail-safe: nič odkryté neprejde.
     if (covered) {
@@ -103,6 +113,19 @@ export class CanvasRenderer {
     // zapíš výsledok späť do pôvodného ImageData a vyrenderuj
     img.data.set(data);
     this.ctx.putImageData(img, 0, 0);
+  }
+
+  private drawRevealBadge(_w: number, h: number): void {
+    const pad = Math.round(h / 40);
+    this.ctx.font = `${Math.round(h / 28)}px system-ui, sans-serif`;
+    const label = '● LIVE — tvár odhalená';
+    const tw = this.ctx.measureText(label).width;
+    this.ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    this.ctx.fillRect(pad, pad, tw + pad * 2, Math.round(h / 18));
+    this.ctx.fillStyle = '#ff5a5a';
+    this.ctx.textAlign = 'left';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText(label, pad * 2, pad + Math.round(h / 36));
   }
 
   private drawCover(w: number, h: number): void {
