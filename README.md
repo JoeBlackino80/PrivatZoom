@@ -42,6 +42,7 @@ zariadenie. **Súkromie nie je sľub na papieri, je to architektúra.**
 | Cesta              | Fáza | Čo to je |
 |--------------------|------|----------|
 | `packages/engine`  | 1    | Prenosné anonymizačné jadro (TypeScript). Pure pixel/audio core + WebGL efekty + on-device ML wrapper. **Toto je majetok.** |
+| `packages/safety`  | 1    | Anti-abuse vrstva (vekové brány, súhlas s nahrávaním, report/block). Prenosná, testovaná. **Podmienka** pre store aj B2B. |
 | `packages/web`     | 0    | Spustiteľná web showcase nad engine — proof, marketing aj manuálny test (kamera → efekty → 0 bytov odoslaných). |
 | `app/`             | 1–2  | Flutter B2C appka (skeleton + plán). Build na zariadení = lokálne cez Mac. |
 | `sdk/`             | 3    | Štruktúra a kontrakt SDK pre B2B licencovanie. |
@@ -82,6 +83,7 @@ npm run build     # build engine + web
 - [x] Anonymizácia hlasu (Web Audio pitch/formant) + konzistentný profil — **unit-tested**
 - [x] Reveal-on-command (hold-to-reveal, bypass detekcie) — **unit-tested**
 - [x] Potlačenie šumu + voice-only režim (kamera vyp., len hlas)
+- [x] Anti-abuse vrstva: vekové brány, súhlas s nahrávaním, report/block — **unit-tested**
 - [x] On-device indikátor „0 bytov odoslaných”
 - [x] Web showcase (proof + manuálny test)
 - [ ] Flutter port jadra (Fáza 1) — skeleton pripravený v `app/`

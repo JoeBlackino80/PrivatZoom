@@ -206,3 +206,55 @@ input[type="text"] {
   padding-top: 16px;
   line-height: 1.5;
 }
+
+/* veková brána */
+.age-gate {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(8, 9, 13, 0.92);
+  backdrop-filter: blur(6px);
+}
+.age-gate.hidden { display: none; }
+.age-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 380px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.age-card .logo { font-size: 32px; }
+.age-card h2 { margin: 0; }
+.age-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.age-card input[type="date"] {
+  background: var(--panel-2); border: 1px solid var(--line);
+  color: var(--text); padding: 10px; border-radius: 9px; font-size: 14px;
+}
+.age-error { color: #ff5a5a !important; min-height: 1em; }
+
+/* bezpečnosť & súhlas */
+.safety .consent-row { margin-bottom: 10px; }
+.consent-pill {
+  display: inline-block;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 12px; font-variant-numeric: tabular-nums;
+}
+.consent-pill.idle { color: var(--muted); }
+.consent-pill.pending { color: var(--warn); border-color: var(--warn); }
+.consent-pill.recording { color: #ff5a5a; border-color: #ff5a5a; }
+.consent-pill.denied { color: var(--muted); }
+.report-row { display: flex; gap: 6px; margin-top: 8px; }
+.report-row select {
+  flex: 1;
+  background: var(--panel-2); border: 1px solid var(--line);
+  color: var(--text); padding: 8px; border-radius: 9px; font-size: 13px;
+}
+.report-row button, .safety .seg button {
+  background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--line); border-radius: 9px;
+  padding: 8px 10px; font-size: 13px; cursor: pointer;
+}
+.report-row button:hover, .safety .seg button:hover { border-color: var(--accent); }
+.safety .seg button:disabled { opacity: 0.4; cursor: default; }

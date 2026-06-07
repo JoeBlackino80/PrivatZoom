@@ -12,6 +12,11 @@ import {
   core,
 } from '@zavoj/engine';
 import { MODELS } from './models.js';
+import { initAgeGate, initSafetyPanel } from './safetyUi.js';
+
+// anti-abuse vrstva — veková brána pri vstupe + panel súhlasu/report/block
+initAgeGate();
+initSafetyPanel();
 
 const $ = <T extends HTMLElement>(id: string): T => {
   const el = document.getElementById(id);

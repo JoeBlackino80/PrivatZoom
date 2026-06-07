@@ -78,11 +78,12 @@ Appka robí marketing aj dôkaz pre B2B predaj. Bez nej sa SDK predáva ťažko.
 - `v2` `[x]` **Open-source engine** — Apache-2.0, auditovateľnosť, ťahá adopciu SDK
 - `v1` `[~]` **Low-bandwidth avatar mód** — zlomok dát oproti videu (avatar efekt hotový; transport v appke)
 
-### Anti-abuse vrstva
-- `v1` `[ ]` **Report / block**
-- `v1` `[ ]` **Indikátor súhlasu s nahrávaním**
-- `v1` `[ ]` **Vekové brány**
+### Anti-abuse vrstva → `packages/safety` (testované, 25 testov)
+- `v1` `[x]` **Report / block** — okamžité lokálne blokovanie + rate-limit reportov
+- `v1` `[x]` **Indikátor súhlasu s nahrávaním** — efemérne defaultne, súhlas všetkých účastníkov
+- `v1` `[x]` **Vekové brány** — self-attestation cez dátum narodenia, data minimization
 - *(Nutné pre schválenie v store aj pre B2B klientov ako telemedicína.)*
+- Napojené v web showcase (veková brána pri vstupe, consent indikátor, report/block).
 
 ### Komunikácia (appka)
 - `v1` `[ ]` **Link-based anonymné miestnosti** — bez účtu sa dá pripojiť

@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@zavoj/engine": "*"
+    "@zavoj/engine": "*",
+    "@zavoj/safety": "*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

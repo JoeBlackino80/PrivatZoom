@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
+    <div id="age-gate" class="age-gate">
+      <div class="age-card">
+        <span class="logo">🛡</span>
+        <h2>Overenie veku</h2>
+        <p>ZÁVOJ je nástroj na súkromie. Vstup je povolený od 18 rokov.
+          Zadaj dátum narodenia — neukladá sa žiadne ID ani biometria, len
+          potvrdenie veku (data minimization).</p>
+        <input id="birth" type="date" />
+        <button id="age-confirm" class="primary">Potvrdiť a vstúpiť</button>
+        <p id="age-error" class="age-error"></p>
+      </div>
+    </div>
+
     <header class="topbar">
       <div class="brand">
         <span class="logo">🛡</span>
@@ -95,6 +108,31 @@
             <small>kvalita + pozadie neprezradí, kde si</small></label>
           <label><input id="voiceonly" type="checkbox" /> Voice-only režim
             <small>kamera vyp., len zaclonený hlas</small></label>
+        </div>
+
+        <div class="group safety">
+          <h2>Bezpečnosť &amp; súhlas</h2>
+          <div class="consent-row">
+            <span id="consent-indicator" class="consent-pill idle">⚪ efemérne · nenahráva sa</span>
+          </div>
+          <div class="seg">
+            <button id="rec-request">Požiadať o nahrávanie</button>
+            <button id="rec-consent" disabled>Súhlasím</button>
+            <button id="rec-deny" disabled>Odmietam</button>
+          </div>
+          <div class="report-row">
+            <select id="report-reason">
+              <option value="harassment">Obťažovanie</option>
+              <option value="abuse">Zneužitie</option>
+              <option value="nudity">Nahota</option>
+              <option value="threats">Vyhrážky</option>
+              <option value="spam">Spam</option>
+              <option value="other">Iné</option>
+            </select>
+            <button id="report-btn">Report</button>
+            <button id="block-btn">Blokovať</button>
+          </div>
+          <p id="safety-status" class="note"></p>
         </div>
 
         <p class="privacy-note">
