@@ -144,6 +144,27 @@
           <p id="safety-status" class="note"></p>
         </div>
 
+        <div class="group">
+          <h2>Miestnosť (Fáza 2)</h2>
+          <div class="seg">
+            <button id="link-once">Jednorazový link</button>
+            <button id="link-timed">Link na 1 h</button>
+          </div>
+          <input id="link-out" type="text" readonly placeholder="vygenerovaný link sa zobrazí tu" />
+          <p class="note">link-miestnosti bez účtu · transport (LiveKit E2EE) sa
+            pripojí v appke</p>
+        </div>
+
+        <div class="group">
+          <h2>Anonymný chat</h2>
+          <div id="chat-log" class="chat-log"></div>
+          <div class="chat-input">
+            <input id="chat-text" type="text" placeholder="správa (efemérna)" />
+            <button id="chat-send">Poslať</button>
+          </div>
+          <p class="note">efemérne — správy sa nikam neukladajú, zmiznú po obnovení</p>
+        </div>
+
         <p class="privacy-note">
           Spracovanie beží <strong>v tvojom prehliadači</strong>. Žiadny video ani
           audio frame neopúšťa zariadenie — indikátor hore drží 0&nbsp;bytov.

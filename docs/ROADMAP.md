@@ -88,17 +88,22 @@ Appka robí marketing aj dôkaz pre B2B predaj. Bez nej sa SDK predáva ťažko.
 ### Komunikácia (appka) → `packages/rooms` (Fáza 2 skeleton, 22 testov)
 - `v1` `[~]` **Link-based anonymné miestnosti** — bez účtu sa dá pripojiť (logika linkov + token hotová; transport LiveKit za `ICallTransport`)
 - `v1` `[~]` 1:1 hovory — `RoomSession` stavový automat hotový; transport v appke
-- `v2` `[x]` Jednorazové / časované linky — `createTimedLink` + `isLinkValid` (one-time/expiry), testované
-- `v2` `[ ]` Anonymný textový chat v hovore
+- `v2` `[x]` Jednorazové / časované linky — `createTimedLink` + `isLinkValid` (one-time/expiry), testované; web UI generuje linky
+- `v2` `[~]` Anonymný textový chat v hovore — efemérne UI v showcase; transport (E2EE data-channel) v appke
 - `later` `[ ]` **Skupinové hovory**
 - `later` `[ ]` **Screen share s auto-blurom** citlivého obsahu
 - `later` `[ ]` **Živé titulky**
 
-### SDK (B2B)
-- `v3` `[ ]` Bindings: iOS / Android / Web
+### SDK (B2B) → `sdk` (`@zavoj/sdk`, testované)
+- `v3` `[~]` Bindings: iOS / Android / Web — `ZavojBinding` kontrakt + verzia hotová; natívna implementácia neskôr
 - `v3` `[ ]` Dokumentácia + ukážkové appky
-- `v3` `[ ]` Konfigurovateľné politiky (force-on / user-choice)
-- `v3` `[ ]` Compliance helpery — GDPR data-minimization
+- `v3` `[x]` Konfigurovateľné politiky (force-on / user-choice / force-off) — `resolveConfig`, testované
+- `v3` `[x]` Compliance helpery — GDPR data-minimization (`isGdprMinimized`, `auditEgress`, dátový inventár), testované
+
+### Adaptéry → `packages/adapters` (Fáza 2 napojenie)
+- `[x]` **LiveKit** transport (E2EE) — `LiveKitTransport` voči reálnemu livekit-client SDK
+- `[x]` **Supabase** účty — `SupabaseAccountStore` (anonymné session, plán z `profiles`)
+- `[x]` **Stripe** platby — `StripeBilling` (checkout cez backend, fail-safe na free), testované
 
 ---
 

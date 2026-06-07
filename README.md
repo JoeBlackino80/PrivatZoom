@@ -44,9 +44,10 @@ zariadenie. **Súkromie nie je sľub na papieri, je to architektúra.**
 | `packages/engine`  | 1    | Prenosné anonymizačné jadro (TypeScript). Pure pixel/audio core + WebGL efekty + on-device ML wrapper. **Toto je majetok.** |
 | `packages/safety`  | 1    | Anti-abuse vrstva (vekové brány, súhlas s nahrávaním, report/block). Prenosná, testovaná. **Podmienka** pre store aj B2B. |
 | `packages/rooms`   | 2    | Fáza 2 skeleton: link-miestnosti, plan gating (free/pro), session state, kontrakty pre LiveKit/Supabase/Stripe. |
+| `packages/adapters`| 2    | Konkrétne implementácie kontraktov: **LiveKit** (E2EE transport), **Supabase** (účty), **Stripe** (platby). Wiring = tvoje kľúče + server. |
+| `sdk/`             | 3    | `@zavoj/sdk` — politiky, compliance helpery (GDPR), bindings kontrakt pre B2B licencovanie. |
 | `packages/web`     | 0    | Spustiteľná web showcase nad engine — proof, marketing aj manuálny test (kamera → efekty → 0 bytov odoslaných). |
-| `app/`             | 1–2  | Flutter B2C appka (skeleton + plán). Build na zariadení = lokálne cez Mac. |
-| `sdk/`             | 3    | Štruktúra a kontrakt SDK pre B2B licencovanie. |
+| `app/`             | 1–2  | Flutter B2C appka (skeleton + Dart port jadra). Build na zariadení = lokálne cez Mac. |
 | `docs/`            | —    | [ROADMAP.md](docs/ROADMAP.md) · [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 
 ---
@@ -88,9 +89,12 @@ npm run build     # build engine + web
 - [x] Scrub scény (auto-blur menoviek/dokumentov/obrazoviek) + viac person + per-kontakt — **unit-tested**
 - [x] On-device indikátor „0 bytov odoslaných”
 - [x] Web showcase (proof + manuálny test)
-- [~] Fáza 2 skeleton (`packages/rooms`): link-miestnosti, plan gating, session — **unit-tested**; transport (LiveKit) za rozhraním
-- [ ] Flutter port jadra (Fáza 1) — skeleton pripravený v `app/`
-- [ ] LiveKit/Supabase/Stripe napojenie (Fáza 2 implementácia)
-- [ ] SDK bindings + compliance (Fáza 3)
+- [x] Fáza 2 skeleton (`packages/rooms`): link-miestnosti, plan gating, session — **unit-tested**
+- [x] LiveKit/Supabase/Stripe adaptéry (`packages/adapters`) — typecheck voči reálnym SDK, Stripe **unit-tested**
+- [x] SDK (`@zavoj/sdk`): politiky, compliance helpery (GDPR), bindings kontrakt — **unit-tested**
+- [x] Flutter Dart port jadra (config, fail-safe, persona, PersonaBook, plan gating) — rovnaké testovacie vektory ako TS
+- [ ] Fáza 2 produkčné napojenie (LiveKit server na infre, Supabase/Stripe kľúče)
+- [ ] Build na iOS/Android (Mac) + store
+- [ ] SDK bindings iOS/Android/Web implementácia
 
 Detailná roadmapa: [docs/ROADMAP.md](docs/ROADMAP.md).

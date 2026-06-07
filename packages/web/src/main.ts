@@ -14,10 +14,13 @@ import {
 } from '@zavoj/engine';
 import { MODELS } from './models.js';
 import { initAgeGate, initSafetyPanel } from './safetyUi.js';
+import { initRoomsUi } from './roomsUi.js';
 
 // anti-abuse vrstva — veková brána pri vstupe + panel súhlasu/report/block
 initAgeGate();
 initSafetyPanel();
+// link-miestnosti + efemérny chat (chat label = aktuálna persona)
+initRoomsUi(() => state.persona);
 
 const $ = <T extends HTMLElement>(id: string): T => {
   const el = document.getElementById(id);

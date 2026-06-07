@@ -11,6 +11,7 @@ class AnonConfig {
   final BackgroundScrub scrubBackground;
   final bool failSafe;
   final bool multiFace;
+  final bool sceneScrub;
 
   const AnonConfig({
     this.mode = AnonMode.pixelate,
@@ -18,6 +19,7 @@ class AnonConfig {
     this.scrubBackground = BackgroundScrub.blur,
     this.failSafe = true,
     this.multiFace = true,
+    this.sceneScrub = false,
   });
 
   AnonConfig copyWith({
@@ -26,6 +28,7 @@ class AnonConfig {
     BackgroundScrub? scrubBackground,
     bool? failSafe,
     bool? multiFace,
+    bool? sceneScrub,
   }) {
     return AnonConfig(
       mode: mode ?? this.mode,
@@ -33,6 +36,7 @@ class AnonConfig {
       scrubBackground: scrubBackground ?? this.scrubBackground,
       failSafe: failSafe ?? this.failSafe,
       multiFace: multiFace ?? this.multiFace,
+      sceneScrub: sceneScrub ?? this.sceneScrub,
     );
   }
 }

@@ -11,12 +11,16 @@ anonymné prvé kolá pohovorov, video podpora).
 
 ## Čo SDK pridáva nad engine
 
-| Vrstva | Súbor | Účel |
-|--------|-------|------|
-| Politiky | `src/policies.ts` | `force-on` / `user-choice` — integrátor vynúti anonymizáciu |
-| Compliance | `src/compliance.ts` | GDPR data-minimization helpery, „žiadne biometrické dáta neopúšťajú zariadenie” |
-| Bindings | (plán) | iOS / Android / Web wrappery nad jadrom |
-| Dokumentácia | (plán) | quickstart + ukážkové appky |
+| Vrstva | Súbor | Účel | Stav |
+|--------|-------|------|------|
+| Politiky | `src/policies.ts` | `force-on` / `user-choice` / `force-off` — integrátor vynúti anonymizáciu (`resolveConfig`) | ✅ testované |
+| Compliance | `src/compliance.ts` | GDPR data-minimization, audit on-device invariantu, dátový inventár | ✅ testované |
+| Bindings | `src/bindings.ts` | `ZavojBinding` kontrakt pre iOS / Android / Web wrappery | ✅ kontrakt |
+| Dokumentácia | (plán) | quickstart + ukážkové appky | ⏳ |
+
+```bash
+npm test -w @zavoj/sdk     # politiky + compliance
+```
 
 ## Princíp
 

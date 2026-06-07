@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zavoj/engine/config.dart';
 import 'package:zavoj/engine/failsafe.dart';
 import 'package:zavoj/engine/voice_profile.dart';
+import 'package:zavoj/engine/personas.dart';
+import 'package:zavoj/engine/billing.dart';
 
 void main() {
   group('config', () {
@@ -57,6 +59,66 @@ void main() {
       expect(a.pitchSemitones, b.pitchSemitones);
       expect(a.formantRatio, b.formantRatio);
       expect(a.detuneCents, b.detuneCents);
+    });
+  });
+
+  group('PersonaBook', () {
+    PersonaBook book() => PersonaBook(const [
+          Persona(id: 'anon', label: 'Anonym', seed: 'anon-1'),
+          Persona(id: 'work', label: 'Práca', seed: 'work-1'),
+        ]);
+
+    test('prvá persona je default a resolve bez kontaktu ju vráti', () {
+      expect(book().getDefault().id, 'anon');
+      expect(book().resolve().id, 'anon');
+    });
+    test('per-kontakt priradenie prebije default', () {
+      final b = book();
+      b.assign('bob', 'work');
+      expect(b.resolve('bob').id, 'work');
+      expect(b.resolve('alice').id, 'anon');
+    });
+    test('„vždy reálny voči X”', () {
+      final b = book();
+      b.assign('mama', realPersonaId);
+      expect(b.isRealFor('mama'), true);
+      expect(b.resolve('mama').id, 'anon');
+    });
+    test('hlas je deterministický podľa seedu persony', () {
+      final b = book();
+      b.assign('bob', 'work');
+      final v = b.voiceFor('bob');
+      final ref = personaProfile('work-1');
+      expect(v.pitchSemitones, ref.pitchSemitones);
+      expect(v.formantRatio, ref.formantRatio);
+    });
+    test('default personu nemožno odstrániť', () {
+      expect(() => book().remove('anon'), throwsArgumentError);
+    });
+  });
+
+  group('billing plan gating', () {
+    test('free zoslabí avatar na blur a zapne vodoznak', () {
+      final res = gateConfig(
+        Plan.free,
+        const AnonConfig(mode: AnonMode.avatar, sceneScrub: true),
+      );
+      expect(res.config.mode, AnonMode.blur);
+      expect(res.config.sceneScrub, false);
+      expect(res.watermark, true);
+    });
+    test('pro ponechá voľby bez vodoznaku', () {
+      final res = gateConfig(
+        Plan.pro,
+        const AnonConfig(mode: AnonMode.avatar, sceneScrub: true),
+      );
+      expect(res.config.mode, AnonMode.avatar);
+      expect(res.config.sceneScrub, true);
+      expect(res.watermark, false);
+    });
+    test('canUseMode rešpektuje plán', () {
+      expect(canUseMode(Plan.free, AnonMode.avatar), false);
+      expect(canUseMode(Plan.pro, AnonMode.avatar), true);
     });
   });
 }
