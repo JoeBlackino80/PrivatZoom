@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+# Zruš rozbehnuté behy pre tú istú ref, keď príde nový push.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # TypeScript monorepo: engine, safety, rooms, adapters, app-core, sdk, web
+  ts:
+    name: TS — typecheck · test · build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (npm ci)
+        run: npm ci
+
+      - name: Typecheck (6 balíkov + web)
+        run: npm run typecheck
+
+      - name: Test (engine · safety · rooms · adapters · app-core · sdk)
+        run: npm test
+
+      - name: Build (všetky balíky + web)
+        run: npm run build
+
+  # Flutter port jadra (app/) — overí Dart vektory rovnaké ako TS.
+  flutter:
+    name: Flutter — analyze · test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub get
+        working-directory: app
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: app
+        run: flutter analyze
+
+      - name: Test (port jadra)
+        working-directory: app
+        run: flutter test

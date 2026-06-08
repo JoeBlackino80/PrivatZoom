@@ -1,0 +1,32 @@
+{
+  "name": "@zavoj/app-core",
+  "version": "0.1.0",
+  "description": "ZÁVOJ — aplikačná vrstva: zloží engine + rooms + safety + transport do jedného join-hovoru toku. Blueprint pre appku aj SDK.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@zavoj/engine": "*",
+    "@zavoj/rooms": "*",
+    "@zavoj/safety": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

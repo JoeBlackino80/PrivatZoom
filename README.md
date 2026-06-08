@@ -1,5 +1,7 @@
 # ZÁVOJ
 
+[![CI](https://github.com/joeblackino80/privatzoom/actions/workflows/ci.yml/badge.svg)](https://github.com/joeblackino80/privatzoom/actions/workflows/ci.yml)
+
 **Privacy video komunikácia — „buď prítomný, ostaň neidentifikovateľný”.**
 
 Anonymizačný engine pre video a hlas, ktorý beží **on-device** na bežných
@@ -45,6 +47,7 @@ zariadenie. **Súkromie nie je sľub na papieri, je to architektúra.**
 | `packages/safety`  | 1    | Anti-abuse vrstva (vekové brány, súhlas s nahrávaním, report/block). Prenosná, testovaná. **Podmienka** pre store aj B2B. |
 | `packages/rooms`   | 2    | Fáza 2 skeleton: link-miestnosti, plan gating (free/pro), session state, kontrakty pre LiveKit/Supabase/Stripe. |
 | `packages/adapters`| 2    | Konkrétne implementácie kontraktov: **LiveKit** (E2EE transport), **Supabase** (účty), **Stripe** (platby). Wiring = tvoje kľúče + server. |
+| `packages/app-core`| 2    | Aplikačná vrstva — `CallController` zloží engine + rooms + safety + transport do jedného join-hovoru toku. Blueprint pre appku aj SDK. |
 | `sdk/`             | 3    | `@zavoj/sdk` — politiky, compliance helpery (GDPR), bindings kontrakt pre B2B licencovanie. |
 | `packages/web`     | 0    | Spustiteľná web showcase nad engine — proof, marketing aj manuálny test (kamera → efekty → 0 bytov odoslaných). |
 | `app/`             | 1–2  | Flutter B2C appka (skeleton + Dart port jadra). Build na zariadení = lokálne cez Mac. |
@@ -92,7 +95,9 @@ npm run build     # build engine + web
 - [x] Fáza 2 skeleton (`packages/rooms`): link-miestnosti, plan gating, session — **unit-tested**
 - [x] LiveKit/Supabase/Stripe adaptéry (`packages/adapters`) — typecheck voči reálnym SDK, Stripe **unit-tested**
 - [x] SDK (`@zavoj/sdk`): politiky, compliance helpery (GDPR), bindings kontrakt — **unit-tested**
+- [x] Aplikačná vrstva (`@zavoj/app-core` `CallController`) — zloží všetko do join-hovoru toku, **unit-tested** (9 integračných testov)
 - [x] Flutter Dart port jadra (config, fail-safe, persona, PersonaBook, plan gating) — rovnaké testovacie vektory ako TS
+- [x] CI (GitHub Actions): TS typecheck/test/build + Flutter analyze/test na každý push
 - [ ] Fáza 2 produkčné napojenie (LiveKit server na infre, Supabase/Stripe kľúče)
 - [ ] Build na iOS/Android (Mac) + store
 - [ ] SDK bindings iOS/Android/Web implementácia
